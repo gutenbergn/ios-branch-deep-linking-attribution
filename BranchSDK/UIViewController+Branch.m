@@ -10,27 +10,30 @@
 
 @implementation UIViewController (Branch)
 
-+ (UIWindow*_Nullable) bnc_currentWindow {
-    Class UIApplicationClass = NSClassFromString(@"UIApplication");
-    if (UIApplicationClass) {
-        UIWindow *keyWindow = nil;
-
-        if ([[UIApplicationClass sharedApplication].delegate respondsToSelector:@selector(window)]) {
-            keyWindow = [UIApplicationClass sharedApplication].delegate.window;
++ (UIWindow *_Nullable)bnc_currentWindow {
+    UIWindow *foundWindow = nil;
+    
+    // Directly using the Scene API for iOS 13 and later
+    for (UIScene *scene in [UIApplication sharedApplication].connectedScenes) {
+        // Ensure the scene is in the foreground and active
+        if (scene.activationState == UISceneActivationStateForegroundActive) {
+            // Check if the scene is of type UIWindowScene for window management
+            if ([scene isKindOfClass:[UIWindowScene class]]) {
+                UIWindowScene *windowScene = (UIWindowScene *)scene;
+                for (UIWindow *window in windowScene.windows) {
+                    if (!window.isHidden && window.isKeyWindow && window.rootViewController) {
+                        foundWindow = window;
+                        break;
+                    }
+                }
+            }
         }
-        if (keyWindow && !keyWindow.isHidden && keyWindow.rootViewController) return keyWindow;
-
-        keyWindow = [UIApplicationClass sharedApplication].keyWindow;
-        if (keyWindow && !keyWindow.isHidden && keyWindow.rootViewController) return keyWindow;
-
-        for (keyWindow in [UIApplicationClass sharedApplication].windows.reverseObjectEnumerator) {
-            if (!keyWindow.isHidden && keyWindow.rootViewController) return keyWindow;
+        if (foundWindow) {
+            break;
         }
     }
-
-    // ToDo: Put different code for extensions here.
-
-    return nil;
+    
+    return foundWindow;
 }
 
 + (UIViewController*_Nullable) bnc_currentViewController {
