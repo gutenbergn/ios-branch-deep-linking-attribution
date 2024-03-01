@@ -240,21 +240,33 @@
 }
 
 + (NSNumber *)screenWidth {
+#if !TARGET_OS_VISION
     UIScreen *mainScreen = [UIScreen mainScreen];
     CGFloat scaleFactor = mainScreen.scale;
     CGFloat width = mainScreen.bounds.size.width * scaleFactor;
     return [NSNumber numberWithInteger:(NSInteger)width];
+#else
+    return [NSNumber numberWithInteger:1280];
+#endif
 }
 
 + (NSNumber *)screenHeight {
+#if !TARGET_OS_VISION
     UIScreen *mainScreen = [UIScreen mainScreen];
     CGFloat scaleFactor = mainScreen.scale;
     CGFloat height = mainScreen.bounds.size.height * scaleFactor;
     return [NSNumber numberWithInteger:(NSInteger)height];
+#else
+    return [NSNumber numberWithInteger:1280];
+#endif
 }
 
 + (NSNumber *)screenScale {
+#if !TARGET_OS_VISION
     return @([UIScreen mainScreen].scale);
+#else
+    return @(2);
+#endif
 }
 
 @end

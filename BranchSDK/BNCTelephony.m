@@ -7,7 +7,7 @@
 //
 
 #import "BNCTelephony.h"
-#if !TARGET_OS_MACCATALYST
+#if !TARGET_OS_MACCATALYST && !TARGET_OS_VISION
 #import <CoreTelephony/CTCarrier.h>
 #import <CoreTelephony/CTTelephonyNetworkInfo.h>
 #endif
@@ -23,7 +23,7 @@
 
 // This only works if device has cell service, otherwise all values are nil
 - (void)loadCarrierInformation {
-    #if !TARGET_OS_MACCATALYST
+    #if !TARGET_OS_MACCATALYST && !TARGET_OS_VISION
     CTTelephonyNetworkInfo *networkInfo = [CTTelephonyNetworkInfo new];
     CTCarrier *carrier;
     if (@available( iOS 12.0, *))
